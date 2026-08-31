@@ -2,9 +2,16 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-<h1>Latest Posts</h1>
+<div class="page-header">
+    <div>
+        <h1>Latest Posts</h1>
+        <p>Discover the latest thoughts and stories from our community.</p>
+    </div>
 
-<a href="{% url 'create_post' %}" class="btn">Create Post</a>
+    <a href="{% url 'create_post' %}" class="btn">
+        Create Post
+    </a>
+</div>
 
 <div id="posts" class="posts">
     <p>Loading posts...</p>
@@ -13,6 +20,26 @@
 
 {% block scripts %}
 <script>
+    function truncateText(text, maxLength = 180) {
+        if (text.length <= maxLength) {
+            return text;
+        }
+
+        return text.substring(0, maxLength).trim() + '...';
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+
+        return date.toLocaleString([], {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit'
+        });
+    }
+
     async function loadPosts() {
         try{
             const response = await fetchWithAuth('/api/posts/')
@@ -28,7 +55,13 @@
                 card.className = 'post-card'
                 card.innerHTML = `
                     <h2>${post.title}</h2>
-                    <p>${post.content}</p>
+                    <div class="post-meta">
+                        <span>By ${post.author_username}</span>
+                        <span>${formatDate(post.created_at)}</span>
+                    </div>
+
+                    <p>${truncateText(post.content)}</p>
+
                     <a href="/post/${post.id}/" class="btn">Read More</a>
                 `
                 container.appendChild(card)
