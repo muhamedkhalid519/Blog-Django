@@ -13,6 +13,8 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    is_admin = models.BooleanField(default=False)
+
     @property
     def is_authenticated(self):
         return True
