@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+
+<h1>Edit Post</h1>
+
+<form id="edit-post-form">
+
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="Enter your post title"
+            required
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="content">Content</label>
+
+        <textarea
+            id="content"
+            name="content"
+            rows="8"
+            placeholder="Write your post..."
+            required
+        ></textarea>
+    </div>
+
+    <button type="submit">Save Changes</button>
+
+    <p id="post-message"></p>
+
+</form>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    const postId = window.location.pathname.split('/').filter(Boolean).pop() 
+    async function loadPost() { 
+        try 
+        { const response = await fetchWithAuth(`/api/posts/${postId}/`) 
+        if (!response) return 
+        if (!response.ok) {
+            throw new Error('Failed to load post!') 
+        } 
+        const post = await response.json() 
+        document.getElementById('title').value = post.title 
+        document.getElementById('content').value = post.content 
+        } 
+        catch (error) { 
+            console.error(error) 
+            document.getElementById('post-message').textContent = 'Failed to load post.' 
+        } 
+    } 
+    document.getElementById('edit-post-form').addEventListener('submit', async (event) =>{ 
+        event.preventDefault() 
+        const title = document.getElementById('title').value.trim() 
+        const content = document.getElementById('content').value.trim() 
+        const message = document.getElementById('post-message') 
+        if (!title || !content) { 
+            message.textContent = 'Title and content are required.' 
+            return 
+            } 
+            try { 
+                const response = await fetchWithAuth(`/api/posts/${postId}/`, { 
+                    method: 'PATCH', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ title: title, content: content }) 
+                }) 
+                const data = await response.json() 
+                if (!response.ok) { 
+                    console.error(data) 
+                    message.textContent = 'Failed to update post.' 
+                    return 
+                } 
+                message.textContent = 'Post updated successfully!' 
+                setTimeout(() => {
+                    window.location.href = '/profile/';
+                }, 500)
+            } 
+            catch (error) { 
+                console.error(error) 
+                message.textContent = 'Something went wrong.'
+            } 
+        }) 
+        loadPost()
+</script>
+{% endblock %}
