@@ -24,6 +24,13 @@
 
 <script>
     let postId
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+    
+        return date.toLocaleString();
+    }
+
     async function loadPost(){
         try{
             postId = Number(window.location.pathname.split('/')[2])
@@ -38,8 +45,8 @@
                     <h1>${post.title}</h1>
                     <p>${post.content}</p>
                     <div class="post-info">
-                        <span>Author: ${post.author}</span>
-                        <span>Created: ${post.created_at}</span>
+                        <span>Author: ${post.author_username}</span>
+                        <span>${formatDate(post.created_at)}</span>
                     </div>
                 </article>
                 <a href="/" class="btn">Back to Home</a>
@@ -50,6 +57,7 @@
             document.getElementById('post').innerHTML = '<p>Failed to load detail</p>'
         }
     }
+
 
     async function loadComments(postId){ 
     try{ 
@@ -85,7 +93,7 @@
                     <strong>${comment.author_name}</strong> 
                 </div> 
                 <p>${comment.content}</p> 
-                <small>${comment.created_at}</small> 
+                <small>${formatDate(comment.created_at)}</small> 
             `
 
             container.appendChild(commentElement)

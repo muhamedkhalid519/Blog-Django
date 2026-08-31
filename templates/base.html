@@ -12,7 +12,7 @@
         <div class="container navbar-content">
             <a href="/" class="logo">Blog</a>
 
-            <div class="nav-links">
+            <div class="nav-links" id="nav-links">
                 <a href="/">Home</a>
                 <a href="/profile/">Profile</a>
                 <a href="#" id="logout-link">Logout</a>
@@ -87,6 +87,12 @@
             const publicPages = ['/login/', '/register/']
             const currentPath = window.location.pathname
 
+            const navLinks = document.getElementById('nav-links')
+
+            if (!accessToken && !refreshToken && navLinks) {
+                navLinks.style.display = 'none'
+            }
+
             if(publicPages.includes(currentPath)) return 
 
             if(accessToken) return
@@ -99,6 +105,22 @@
         }
 
         protect()
+
+        let lastScrollY = window.scrollY
+        const navbar = document.querySelector('.navbar')
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY
+
+            if (currentScrollY > lastScrollY && currentScrollY > 80) {
+                navbar.classList.add('navbar-hidden')
+            } 
+            else {
+                navbar.classList.remove('navbar-hidden')
+            }
+
+            lastScrollY = currentScrollY
+        })
 
         const logoutLink = document.getElementById('logout-link')
         if(logoutLink){
