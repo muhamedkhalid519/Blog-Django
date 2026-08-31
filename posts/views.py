@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.shortcuts import render
 
 from .models import Post
 from .serializers import PostSerializer
@@ -110,3 +111,16 @@ class PostDetailView(APIView):
             {'message': 'Post deleted successfully'},
             status=status.HTTP_200_OK
         )
+
+
+def home(request):
+    return render(request, 'blog/home.html')
+
+def post_detail(request, post_id):
+    return render(request, 'blog/post_detail.html')
+
+def create_post(request):
+    return render(request, 'blog/create_post.html')
+
+def edit_post(request, post_id):
+    return render(request, 'blog/edit_post.html')

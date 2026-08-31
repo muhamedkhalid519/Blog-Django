@@ -14,7 +14,7 @@ class CommentListCreateView(APIView):
 
     def get(self, request):
         comments = Comment.objects.filter(is_deleted=False)
-        serializer = CommentSerializer(comments)
+        serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
 

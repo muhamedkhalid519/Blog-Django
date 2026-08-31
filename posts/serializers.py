@@ -17,6 +17,7 @@ class PostSerializer(serializers.ModelSerializer):
         ]
 
         read_only_fields = [
+            'slug',
             'author',
             'is_deleted',
             'deleted_at',
